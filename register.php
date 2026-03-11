@@ -28,8 +28,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             }
         } else{
             $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO `users`(`username`, `password`, `email`) 
-                    VALUES ('$username','$hashedpassword','$email')";
+            $sql = "INSERT INTO `users`(`username`, `password`, `email`, `wallet`, `daily_crate`, `weekly_crate`) -- All dates must be (now - 10days)
+                    VALUES ('$username','$hashedpassword','$email', 10, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY)";
         
             if(mysqli_query($conn, $sql)){
                 $ret = "Dodano użytkownika";
