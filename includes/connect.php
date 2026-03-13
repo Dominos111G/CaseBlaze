@@ -1,4 +1,8 @@
 <?php
+if (isset($conn)) {
+    return;
+}
+
 $type = "localhost";
 $username = "root";
 $password = "";
