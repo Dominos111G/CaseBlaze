@@ -12,12 +12,18 @@ if ($i_result->fetch_assoc() > 0) {
         echo '<div class="item">
                 <h4>' . $w['name'] . '</h4>
                 <p>' . $w['zuzycie'] . '</p>
-                <p>' . $w['jakosc'] . '</p>
-                <form action="includes/sell.php" method="post">
-                    <input type="hidden" name="i_id" value="' . $w['i_id'] . '">
-                    <input type="submit" value="Sell for ' . $w['sell_price'] . '">
-                </form>
-            </div>';
+                <p>' . $w['jakosc'] . '</p>';
+
+                if ($owner) {
+                    echo '<form action="includes/sell.php" method="post">
+                            <input type="hidden" name="i_id" value="' . $w['i_id'] . '">
+                            <input type="hidden" name="back" value="profile.php">
+                            <input type="submit" value="Sell for ' . $w['sell_price'] . ' vPLN">
+                        </form>';
+                } else {
+                    echo '<p>Price ' . $w['sell_price'] . ' vPLN</p>';
+                }
+            echo '</div>';
     }
 } else {
     echo "<p>Ekwipunek jest pusty!</p>";

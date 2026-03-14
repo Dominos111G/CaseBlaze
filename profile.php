@@ -17,9 +17,14 @@
     $id = 0;
     if (isset($_SESSION['user_id'])) {
         $id = $_SESSION['user_id'];
+        $owner = true;
     }
 
     if (isset($_GET['uid'])) {
+        $owner = false;
+        if (isset($_SESSION['user_id']) && $_GET['uid'] == $id) {
+            $owner = true;
+        }
         $id = $_GET['uid'];
     }
 
@@ -33,7 +38,7 @@
         echo '<div>
                 <h2>Ekwipunek</h2>
                 <div>';
-                    include "inventory.php";
+                    include "includes/inventory.php";
         echo '</div>
             </div>';
     } else {
