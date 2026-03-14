@@ -11,7 +11,7 @@ if (!isset($_POST['i_id']) || !isset($_POST['back'])) {
     exit;
 }
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['wallet'])) {
-    // header("Location: /login.php");
+    header("Location: /login.php");
     exit;
 }
 
