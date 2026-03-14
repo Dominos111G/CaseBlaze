@@ -22,7 +22,7 @@
                 $query = 'SELECT * FROM crates ORDER BY price ASC;';
                 $result = $conn->query($query);
 
-                if ($result->fetch_assoc() > 0) {
+                if ($result->num_rows > 0) {
                     $snames = ["Water Case", "Knife Case"];
                     foreach ($result as $r) {
                         $fprice = $r['price'];

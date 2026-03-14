@@ -20,7 +20,7 @@
                 $query = 'SELECT * FROM crates WHERE price = 0 ORDER BY name ASC;';
                 $result = $conn->query($query);
 
-                if ($result->fetch_assoc() > 0) {
+                if ($result->num_rows > 0) {
                     foreach ($result as $r) {
                         $status = isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] ? true : false : false;
                         $status_text = $status ? "Open" : "Login to open";
