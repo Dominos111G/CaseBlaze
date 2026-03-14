@@ -1,4 +1,5 @@
 <?php include 'includes/config.php'; ?>
+<?php include 'includes/connect.php'; ?>
 
 <!DOCTYPE html>
 <html lang="pl">
@@ -10,6 +11,42 @@
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
+
+    <?php
+    $owner = false;
+    $id = 0;
+    if (isset($_SESSION['user_id'])) {
+        $id = $_SESSION['user_id'];
+        $owner = true;
+    }
+
+    if (isset($_GET['uid'])) {
+        $owner = false;
+        if (isset($_SESSION['user_id']) && $_GET['uid'] == $id) {
+            $owner = true;
+        }
+        $id = $_GET['uid'];
+    }
+
+    $zapytanie = "SELECT id, username, wallet FROM users WHERE id = " . $id . ";";
+    $wynik = $conn->query($zapytanie);
+    $w = $wynik->fetch_assoc();
+
+    if ($w > 0) {
+        echo "<h2>" . $w['username'] . "</h2>";
+        echo "<p>Stan portfela: <b>" . $w['wallet'] . "</b> vPLN.</p>";
+        echo '<div>
+                <h2>Ekwipunek</h2>
+                <div>';
+                    include "includes/inventory.php";
+        echo '</div>
+            </div>';
+    } else {
+        echo "<p style='color:red;'><b>Błąd 404</b>: nie znaleziono strony.</p>";
+        die;
+    }
+    ?>
+    
     
 </body>
 </html>
