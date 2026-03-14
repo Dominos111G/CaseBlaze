@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h1 class="cent-text">Logowanie</h1><br>
         <form class="cent-form" action="" method="POST">
             <label for="username">Nazwa Użytkownika:</label><br>
-            <input class="pole" require type="text" name="username" id="username" required></input><br>
+            <input class="pole" type="text" name="username" id="username" required></input><br>
             <label for="password">Hasło:</label><br>
             <input class="pole" type="password" name="password" id="password" required></input><br>
             <input class="p-kolor" type="submit" value="Zaloguj">
