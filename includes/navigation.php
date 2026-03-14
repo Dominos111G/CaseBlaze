@@ -2,6 +2,7 @@
     <ul>
         <li><a href="/">Crates</a></li>
         <li><a href="/free.php">Free crates</a></li>
+        <li><a href="/leaderboard.php">Leaderboard</a></li>
 
         <?php if (isset($_SESSION['user_id'])): ?>
             <li><a href="/wallet.php">Wallet</a></li>
