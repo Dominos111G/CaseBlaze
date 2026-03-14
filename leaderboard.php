@@ -16,7 +16,7 @@
 
     <main>
         <div>
-            <h2>Biggest Wallet</h2>
+            <h2>Most vPLN</h2>
             <table>
                 <tr>
                     <th style='min-width: 20px'>Place</th>
@@ -44,13 +44,13 @@
         </div>
 
         <div>
-            <h2>Biggest Value In Skins</h2>
+            <h2>Most vPLN In Items</h2>
             <table>
                 <tr>
                     <th style='min-width: 20px'>Place</th>
                     <th style='min-width: 150px'>Username</th>
-                    <th style='min-width: 40px'>Value</th>
-                    <th style='min-width: 30px'>Items</th>
+                    <th style='min-width: 50px'>Value</th>
+                    <th style='min-width: 30px'>Amount</th>
                 </tr>
                 <?php
                 $i_query = "SELECT 
@@ -83,7 +83,7 @@
                         $place++;
                     }
                 } else {
-                    echo "<tr><td colspan='3' style='text-align: center;'>No records found</td></tr>";
+                    echo "<tr><td colspan='4' style='text-align: center;'>No records found</td></tr>";
                 }
                 ?>
             </table>
