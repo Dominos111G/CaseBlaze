@@ -19,9 +19,9 @@
             <h2>Biggest Wallet</h2>
             <table>
                 <tr>
-                    <th>Place</th>
-                    <th>Username</th>
-                    <th>Value</th>
+                    <th style='min-width: 20px'>Place</th>
+                    <th style='min-width: 150px'>Username</th>
+                    <th style='min-width: 50px'>Value</th>
                 </tr>
                 <?php
                 $w_query = "SELECT id, username, wallet FROM users ORDER BY wallet DESC LIMIT 50;";
@@ -32,7 +32,7 @@
                         echo '<tr>
                                 <td>' . $place . '</td>
                                 <td><a href="/profile.php?uid=' . $r['id'] . '">' . $r['username'] . '</td>
-                                <td>' . $r['wallet'] . '</td>
+                                <td style="text-align: right;">' . $r['wallet'] . ' vPLN</td>
                             </tr>';
                         $place++;
                     }
@@ -47,10 +47,10 @@
             <h2>Biggest Value In Skins</h2>
             <table>
                 <tr>
-                    <th>Place</th>
-                    <th>Username</th>
-                    <th>Value</th>
-                    <th>Items</th>
+                    <th style='min-width: 20px'>Place</th>
+                    <th style='min-width: 150px'>Username</th>
+                    <th style='min-width: 40px'>Value</th>
+                    <th style='min-width: 30px'>Items</th>
                 </tr>
                 <?php
                 $i_query = "SELECT 
@@ -78,7 +78,7 @@
                                 <td><a href="/profile.php?uid=' . (int)$r['id'] . '">' .
                                     htmlspecialchars($r['username']) . '</a></td>
                                 <td style="text-align: right;">' . $formatted_value . ' vPLN</td>
-                                <td>' . $r['item_count'] . '</td>
+                                <td style="text-align: center;">' . $r['item_count'] . '</td>
                             </tr>';
                         $place++;
                     }
