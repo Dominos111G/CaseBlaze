@@ -144,8 +144,6 @@ if ($_SESSION['is_admin'] == 0) {
                         </td>
 
                         <td>
-                            <form method="post">
-                            </form>
                         </td>
 
                         <td>
