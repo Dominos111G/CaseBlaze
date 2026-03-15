@@ -4,7 +4,7 @@ include 'includes/connect.php';
 $error  = "";
 $ret  = "";
 
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true){
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
     header("Location: index.php");
     exit;
 }
@@ -16,25 +16,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $confirmpassword = mysqli_real_escape_string($conn, $_POST["confirmpassword"]);
 
     if($password !== $confirmpassword){
-        $error="Hasła się różnią";
+        $error="Passwords aren't identical.";
     } else{
-        $sql = "SELECT * FROM users WHERE username='$username' OR email='$email'";
-        $result = mysqli_query($conn, $sql);
-        if(mysqli_num_rows($result) > 0){
-            if (mysqli_fetch_assoc($result)['email'] == $email){
-                $error = "Adres e-mail jest juz zajety";
+        $query = "SELECT * FROM users WHERE username='$username' OR email='$email'";
+        $result = $conn->query($query);
+        if($result->num_rows > 0){
+            if ($result->fetch_assoc['email'] == $email) {
+                $error = "Email is already used.";
             } else {
-                $error = "Nazwa użytkownika jest juz zajeta";
+                $error = "Username is already used.";
             }
         } else{
             $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO `users`(`username`, `password`, `email`, `wallet`, `daily_crate`, `weekly_crate`) -- All dates must be (now - 10days)
+            $add_query = "INSERT INTO `users`(`username`, `password`, `email`, `wallet`, `daily_crate`, `weekly_crate`)
                     VALUES ('$username','$hashedpassword','$email', 10, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY)";
         
-            if(mysqli_query($conn, $sql)){
-                $ret = "Dodano użytkownika";
+            if($conn->query($add_query)) {
+                $ret = "User added successfully.";
             } else{
-                echo"<p>Nie udało się dodać użytkownika</p>";
+                echo"<p>Couldn't add user.</p>";
             }
     }  
     }
@@ -53,7 +53,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <?php include 'includes/navigation.php'; ?>
     
     <main class="div">
-        <h1 class="cent-text">Rejestracja</h1><br>
+        <h1 class="cent-text">Register</h1><br>
         <?php
         if($error){
             echo"<p style='color: red'>$error</p><br>";
@@ -65,13 +65,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <form class="cent-form" action="" method="POST">
             <label for="email">Email:</label><br>
             <input require type="email" name="email" id="email" required></input><br>
-            <label for="username">Nazwa Użytkownika:</label><br>
+            <label for="username">Username:</label><br>
             <input require type="text" name="username" id="username" required></input><br>
-            <label for="password">Hasło:</label><br>
+            <label for="password">Password:</label><br>
             <input require type="password" name="password" id="password" required></input><br>
-            <label for="confirmpasswors">Powtórz Hasło:</label><br>
+            <label for="confirmpasswors">Repeat password:</label><br>
             <input require type="password" name="confirmpassword" id="confirmpassword" required></input><br>
-            <input type="submit" value="Zarejestruj">
+            <input type="submit" value="Create Account">
         </form>
     </main>
 </body>

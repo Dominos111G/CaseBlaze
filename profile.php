@@ -54,15 +54,15 @@
 
     if ($w > 0) {
         echo "<h2>" . $w['username'] . "</h2>";
-        echo "<p>Stan portfela: <b>" . $w['wallet'] . "</b> vPLN.</p>";
+        echo "<p>Wallet: <b>" . $w['wallet'] . "</b> vPLN.</p>";
         echo '<div>
-                <h2>Ekwipunek</h2>
+                <h2>Inventory</h2>
                 <div>';
                     include "includes/inventory.php";
         echo '</div>
             </div>';
     } else {
-        echo "<p style='color:red;'><b>Błąd 404</b>: nie znaleziono strony.</p>";
+        echo "<p style='color:red;'><b>Error 404</b></p>";
         die;
     }
     ?>

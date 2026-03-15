@@ -12,7 +12,7 @@
 <body>
     <?php include 'includes/navigation.php'; ?>
     
-    <h1>Ranking Użytkowników</h1>
+    <h1>Leaderboard</h1>
 
     <main>
         <div>
