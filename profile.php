@@ -12,9 +12,29 @@
 <body>
     <?php include 'includes/navigation.php'; ?>
 
+    <h3>Search User</h3>
+    <form method="get">
+        <input type="text" name="search" placeholder="UID / Username" <?php if (isset($_GET['search'])) echo " value=" . $_GET['search'] . " "; ?>>
+        <input type="submit" value="Find User">
+    </form>
+
     <?php
     $owner = false;
     $id = 0;
+    if (isset($_GET['search'])) {
+        $s_opt = $_GET['search'];
+        $s_query = 'SELECT id FROM users WHERE id="' . $s_opt . '" OR username="' . $s_opt . '";';
+        $s_result = $conn->query($s_query);
+        $s_f = $s_result->fetch_assoc();
+        if ($s_f > 0) {
+            $id = $s_f['id'];
+            header("Location: /profile.php?uid=$id");
+            exit;
+        } else {
+            echo '<p style="color: red;">Couldn\'t find user.';
+            return;
+        }
+    }
     if (isset($_SESSION['user_id'])) {
         $id = $_SESSION['user_id'];
         $owner = true;
