@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CaseBlaze - Wallet</title>
+    <title>CaseBlaze - Leaderboard</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -63,7 +63,7 @@
                             LEFT JOIN items i ON inv.item_id = i.id
                             GROUP BY u.id, u.username
                             HAVING total_value > 0
-                            ORDER BY total_value DESC, u.username ASC
+                            ORDER BY total_value DESC, item_count ASC, u.username ASC
                             LIMIT 50;";
                 
                 $i_result = $conn->query($i_query);
