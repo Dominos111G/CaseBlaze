@@ -33,6 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] !== "GET") {
 
                 if ($result->fetch_assoc() > 0) {
                     foreach ($result as $r) {
+                        if ($r['visible'] == 0) {
+                            header('Location: /');
+                            exit;
+                        }
+
                         $status = isset($_SESSION['logged_in']) ? $_SESSION['logged_in'] ? true : false : false;
                         $statusText = $status ? '$'.$r['price'] : "Login to open";
                         $isAvaliable = false;
