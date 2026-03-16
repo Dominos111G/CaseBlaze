@@ -25,6 +25,10 @@
                 if ($result->num_rows > 0) {
                     $snames = ["Water Case", "Knife Case"];
                     foreach ($result as $r) {
+                        if ($r['visible'] == 0) {
+                            continue;
+                        }
+                        
                         $fprice = $r['price'];
                         if ($fprice == 0) {
                             $fprice = "Free";
