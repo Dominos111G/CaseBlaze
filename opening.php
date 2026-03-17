@@ -1,23 +1,30 @@
 <?php
-    // Walidacja czy kod gotowy do działania
-    if (!isset($status) || !isset($status_text) 
-        || !isset($isAvaliable) || !isset($price) 
-        || !isset($u_id) || !isset($wallet)) {
-        echo "<p style='color: red;'>Some data are missing!</p>";
+    $required_vars = ['status', 'status_text', 'id', 'isAvaliable', 'price', 'u_id', 'wallet'];
+    $missing = [];
+
+    foreach ($required_vars as $var) {
+        if (!isset($var)) {
+            $missing[] = $var;
+        }
+    }
+    if (!empty($missing)) {
+        echo "<p style='color: red;'>Missing data: " . implode(', ', $missing) . "</p>";
         return;
     }
+
+    $query = 'SELECT i.id, i.img FROM items AS i
+            INNER JOIN crate_item AS ci ON ci.item_id = i.id
+            WHERE ci.crate_id = ' . $id . ';';
+    $result = $conn->query($query);
+
+    echo '<div id="crate-opening">';
+    foreach ($result as $r) {
+        echo '<img class="open-img" src="/img/items/' . $r['img']  . '" alt="Item image">';
+    }
+    echo '</div>';
 ?>
-<div id="crate-opening">
-    <img src="/img/items/b.png" alt="Item image">
-    <img src="/img/items/br.png" alt="Item image">
-    <img src="/img/items/g.png" alt="Item image">
-    <img src="/img/items/n.png" alt="Item image">
-    <img src="/img/items/o.png" alt="Item image">
-    <img src="/img/items/p.png" alt="Item image">
-    <img src="/img/items/pi.png" alt="Item image">
-    <img src="/img/items/r.png" alt="Item image" id="final-item">
-    <img src="/img/items/y.png" alt="Item image">
-</div>
+
+ <!-- id="final-item"> -->
 
 <script>
     const items = document.querySelectorAll('#crate-opening img');
