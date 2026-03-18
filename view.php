@@ -40,6 +40,39 @@ if ($crate['visible'] == 0) {
     <title>CaseBlaze - <?php echo htmlspecialchars($crate['name']); ?></title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/view.css">
+    <style>
+        .timer-text {
+            font-size: 14px;
+            font-weight: normal;
+            display: inline-block;
+        }
+        
+        .open-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background: #ccc;
+        }
+        
+        .open-btn:disabled:hover {
+            background: #ccc;
+            transform: none;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .open-btn.free {
+            background: linear-gradient(135deg, #6b8cff 0%, #4a6cf7 100%);
+        }
+        
+        .open-btn.free:hover {
+            background: linear-gradient(135deg, #7c9cff 0%, #5b7dff 100%);
+        }
+    </style>
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
@@ -57,25 +90,92 @@ if ($crate['visible'] == 0) {
                     $stmt->execute();
                     $u_result = $stmt->get_result();
                     $user = $u_result->fetch_assoc();
+                    
+                    // Pobierz daty dla darmowych skrzynek
+                    $time_query = "SELECT daily_crate, weekly_crate FROM users WHERE id = ?";
+                    $stmt = $conn->prepare($time_query);
+                    $stmt->bind_param('i', $_SESSION['user_id']);
+                    $stmt->execute();
+                    $time_result = $stmt->get_result();
+                    $time_fetch = $time_result->fetch_assoc();
                 }
                 ?>
             </div>
 
             <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
                 <div class="opening-section">
-                    <button class="open-btn <?php echo $crate['price'] == 0 ? 'free' : ''; ?>" 
-                            id="openCrateBtn" 
-                            data-crate-id="<?php echo $crate['id']; ?>"
-                            data-price="<?php echo $crate['price']; ?>"
-                            <?php echo ($user['wallet'] < $crate['price'] && $crate['price'] > 0) ? 'disabled' : ''; ?>>
-                        <?php 
+                    <div class="button-container">
+                        <?php
+                        $is_disabled = false;
+                        $button_text = '';
+                        $next_timestamp = 0;
+                        
                         if ($crate['price'] == 0) {
-                            echo 'OTWÓRZ DARMOWĄ SKRZYNKĘ';
+                            if ($crate['name'] == 'Daily Case') {
+                                $last_opened = $time_fetch['daily_crate'];
+                                
+                                // Sprawdź czy to wartość domyślna (0000-00-00 00:00:00)
+                                if ($last_opened == '0000-00-00 00:00:00') {
+                                    $is_disabled = false;
+                                    $button_text = 'Open Daily Case!';
+                                    $next_timestamp = 0;
+                                } else {
+                                    $last_timestamp = strtotime($last_opened);
+                                    $now = time();
+                                    
+                                    if ($last_timestamp <= $now) {
+                                        $is_disabled = false;
+                                        $button_text = 'Open Daily Case!';
+                                        $next_timestamp = 0;
+                                    } else {
+                                        $is_disabled = true;
+                                        $next_timestamp = $last_timestamp;
+                                        $button_text = '<span class="timer-text" data-timestamp="' . $last_timestamp . '">Loading...</span>';
+                                    }
+                                }
+                                
+                            } elseif ($crate['name'] == 'Weekly Case') {
+                                $last_opened = $time_fetch['weekly_crate'];
+                                
+                                // Sprawdź czy to wartość domyślna (0000-00-00 00:00:00)
+                                if ($last_opened == '0000-00-00 00:00:00') {
+                                    $is_disabled = false;
+                                    $button_text = 'Open Weekly Case!';
+                                    $next_timestamp = 0;
+                                } else {
+                                    $last_timestamp = strtotime($last_opened);
+                                    $now = time();
+                                    
+                                    if ($last_timestamp <= $now) {
+                                        $is_disabled = false;
+                                        $button_text = 'Open Weekly Case!';
+                                        $next_timestamp = 0;
+                                    } else {
+                                        $is_disabled = true;
+                                        $next_timestamp = $last_timestamp;
+                                        $button_text = '<span class="timer-text" data-timestamp="' . $last_timestamp . '">Loading...</span>';
+                                    }
+                                }
+                            }
+                            
                         } else {
-                            echo 'OTWÓRZ ZA ' . number_format($crate['price'], 2) . ' vPLN';
+                            $button_text = 'OPEN FOR ' . number_format($crate['price'], 2) . ' vPLN';
+                            if ($user['wallet'] < $crate['price']) {
+                                $is_disabled = true;
+                            }
                         }
                         ?>
-                    </button>
+                        
+                        <button class="open-btn <?php echo $crate['price'] == 0 ? 'free' : ''; ?>" 
+                                id="openCrateBtn" 
+                                data-crate-id="<?php echo $crate['id']; ?>"
+                                data-price="<?php echo $crate['price']; ?>"
+                                data-crate-name="<?php echo $crate['name']; ?>"
+                                data-next-timestamp="<?php echo $next_timestamp; ?>"
+                                <?php echo $is_disabled ? 'disabled' : ''; ?>>
+                            <?php echo $button_text; ?>
+                        </button>
+                    </div>
 
                     <div class="opening-container" id="openingContainer" style="display: none;">
                         <div class="items-slider" id="itemsSlider"></div>
@@ -87,7 +187,7 @@ if ($crate['visible'] == 0) {
                 </div>
             <?php else: ?>
                 <div class="error-message">
-                    Zaloguj się, aby otworzyć tę skrzynkę
+                    Log in to open this crate
                 </div>
             <?php endif; ?>
 
@@ -144,19 +244,74 @@ if ($crate['visible'] == 0) {
     </div>
 
     <script>
-        let currentAnimationItems = [];
-        let winningPosition = 0;
-        let animationInterval = null;
-        let currentPosition = 0;
+        // Elementy DOM
+        const openBtn = document.getElementById('openCrateBtn');
         const slider = document.getElementById('itemsSlider');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        const openBtn = document.getElementById('openCrateBtn');
         const openingContainer = document.getElementById('openingContainer');
         const loading = document.getElementById('loading');
         const resultModal = document.getElementById('resultModal');
         const resultItem = document.getElementById('resultItem');
         
+        // Zmienne dla animacji
+        let currentAnimationItems = [];
+        let winningPosition = 0;
+        let currentPosition = 0;
+        
+        // Zmienne dla timera
+        let timerInterval = null;
+        
+        // Funkcja aktualizująca timer
+        function updateTimer() {
+            const now = Math.floor(Date.now() / 1000);
+            const timerText = document.querySelector('.timer-text');
+            
+            if (!timerText) return;
+            
+            const targetTimestamp = parseInt(timerText.dataset.timestamp) || 0;
+            
+            if (targetTimestamp <= now) {
+                // Czas minął - odblokuj przycisk i zmień tekst
+                const crateName = openBtn.dataset.crateName;
+                timerText.textContent = crateName === 'Daily Case' ? 'Open Daily Case!' : 'Open Weekly Case!';
+                openBtn.disabled = false;
+                
+                // Zatrzymaj timer
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            } else {
+                // Oblicz pozostały czas
+                let remaining = targetTimestamp - now;
+                let timeString = '';
+                
+                if (openBtn.dataset.crateName === 'Daily Case') {
+                    const hours = Math.floor(remaining / 3600);
+                    const minutes = Math.floor((remaining % 3600) / 60);
+                    const seconds = remaining % 60;
+                    timeString = `${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    const days = Math.floor(remaining / 86400);
+                    const hours = Math.floor((remaining % 86400) / 3600);
+                    const minutes = Math.floor((remaining % 3600) / 60);
+                    timeString = `${days}d ${hours}h ${minutes}m`;
+                }
+                
+                timerText.textContent = `Available in: ${timeString}`;
+            }
+        }
+        
+        // Inicjalizacja timera jeśli potrzebny
+        if (openBtn && openBtn.dataset.nextTimestamp && parseInt(openBtn.dataset.nextTimestamp) > 0) {
+            if (document.querySelector('.timer-text')) {
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+        
+        // Funkcje animacji
         function startAnimation(items, winningPos) {
             currentAnimationItems = items;
             winningPosition = winningPos;
@@ -179,7 +334,7 @@ if ($crate['visible'] == 0) {
 
             // Wyśrodkuj na wygrywającym przedmiocie
             setTimeout(() => {
-                const itemWidth = 220; // szerokość + gap
+                const itemWidth = 220;
                 const targetScroll = winningPosition * itemWidth - (slider.clientWidth / 2) + 100;
                 slider.scrollLeft = targetScroll;
                 currentPosition = winningPosition;
@@ -223,22 +378,21 @@ if ($crate['visible'] == 0) {
             resultModal.style.display = 'none';
         }
 
-        prevBtn.addEventListener('click', () => moveSlider(-1));
-        nextBtn.addEventListener('click', () => moveSlider(1));
+        // Event listeners dla slidera
+        if (prevBtn && nextBtn) {
+            prevBtn.addEventListener('click', () => moveSlider(-1));
+            nextBtn.addEventListener('click', () => moveSlider(1));
+        }
 
+        // Otwieranie skrzynki
         if (openBtn) {
             openBtn.addEventListener('click', async function() {
-                openBtn.disabled = true;
+                if (this.disabled) return;
+                
+                this.disabled = true;
                 const crateId = this.dataset.crateId;
                 const price = parseFloat(this.dataset.price);
-
-                // Sprawdź czy użytkownik ma wystarczająco środków
-                <?php if (isset($user)): ?>
-                if (price > 0 && <?php echo $user['wallet']; ?> < price) {
-                    alert('Nie masz wystarczających środków na portfelu!');
-                    return;
-                }
-                <?php endif; ?>
+                const crateName = this.dataset.crateName;
 
                 // Pokaż loading
                 loading.style.display = 'flex';
@@ -260,12 +414,21 @@ if ($crate['visible'] == 0) {
                         if (walletElement) {
                             walletElement.textContent = data.new_balance.toFixed(2) + ' vPLN';
                         }
-
-                        // Zablokuj przycisk jeśli brak środków
-                        if (data.new_balance < price && price > 0) {
-                            openBtn.disabled = true;
+                        
+                        // Zaktualizuj timestamp dla darmowych skrzynek
+                        if (data.next_available) {
+                            // Zmień tekst przycisku na timer
+                            this.innerHTML = '<span class="timer-text" data-timestamp="' + data.next_available + '">Loading...</span>';
+                            this.dataset.nextTimestamp = data.next_available;
+                            
+                            // Restartuj timer
+                            if (timerInterval) {
+                                clearInterval(timerInterval);
+                            }
+                            updateTimer();
+                            timerInterval = setInterval(updateTimer, 1000);
                         }
-
+                        
                         // Rozpocznij animację
                         startAnimation(data.animation_items, data.winning_position);
 
@@ -275,19 +438,27 @@ if ($crate['visible'] == 0) {
                         // Pokaż wynik po krótkim opóźnieniu
                         setTimeout(() => {
                             showResult(data.selected_item);
-                            openBtn.disabled = false;
                         }, 1500);
                     } else {
                         loading.style.display = 'none';
                         alert('Błąd: ' + (data.error || 'Nie udało się otworzyć skrzynki'));
+                        this.disabled = false;
                     }
                 } catch (error) {
                     loading.style.display = 'none';
                     console.error('Error:', error);
                     alert('Wystąpił błąd podczas otwierania skrzynki');
+                    this.disabled = false;
                 }
             });
         }
+
+        // Zatrzymaj timer przy odświeżeniu strony
+        window.addEventListener('beforeunload', function() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        });
     </script>
 </body>
 </html>
