@@ -34,7 +34,7 @@ $user_id = $_SESSION['user_id'];
         </form>
         <?php
             if (isset($_POST['add'])) {
-                $amount = $_POST['add'];
+                $amount = $_POST['add'];  
                 $cookie_name = "cooldown" . $amount;
                 if (isset($_COOKIE[$cookie_name])) {
                     return;
