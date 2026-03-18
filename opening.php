@@ -12,7 +12,7 @@
         return;
     }
 
-    $query = 'SELECT i.id, i.img FROM items AS i
+    $query = 'SELECT DISTINCT i.id, i.img FROM items AS i
             INNER JOIN crate_item AS ci ON ci.item_id = i.id
             WHERE ci.crate_id = ' . $id . ';';
     $result = $conn->query($query);

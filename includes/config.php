@@ -1,5 +1,7 @@
 <?php
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     // $_SESSION['logged_in'] = true;
     // $_SESSION['username'] = $user['username'];
     // $_SESSION['email'] = $user['email'];
