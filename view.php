@@ -111,9 +111,7 @@ if ($crate['visible'] == 0) {
                 <div class="items-grid">
                     <?php foreach ($i_result as $ir): ?>
                         <div class="crate-item">
-                            <div class="item-image">
                             <img class="item-image" src="/img/items/<?php echo $ir['img']; ?>" alt="Item Image">
-                            </div>
                             <h4><?php echo htmlspecialchars($ir['name']); ?></h4>
                             <p>Jakość: <?php echo htmlspecialchars($ir['quality_name'] ?? 'Standard'); ?></p>
                             <p>Stan: <?php echo htmlspecialchars($ir['exterior_name'] ?? 'Standard'); ?></p>
