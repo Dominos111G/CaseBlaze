@@ -1,6 +1,6 @@
-<?php include 'includes/config.php';
+<?php 
+include 'includes/config.php';
 include 'includes/connect.php';
-
 $error = "";
 
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true){
@@ -12,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $_POST["username"]);
     $password = mysqli_real_escape_string($conn, $_POST["password"]);
 
-    $sql = "SELECT * FROM users WHERE username='$username'";
-    $result = mysqli_query($conn, $sql);
+    $query = "SELECT * FROM users WHERE username='$username'";
+    $result = mysqli_query($conn, $query);
 
     if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
@@ -30,10 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: index.php");
             exit;
         } else {
-            $error = "Hasło jest niepoprawne!";
+            $error = "Incorrect password.";
         }
     } else {
-        $error="Nie ma takiego użytkownika!";
+        $error="User doesn't exist.";
     }  
 }
 ?>
@@ -49,13 +49,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <?php include 'includes/navigation.php'; ?>
     <main class="div">
-        <h1 class="cent-text">Logowanie</h1><br>
+        <h1 class="cent-text">Login</h1><br>
         <form class="cent-form" action="" method="POST">
-            <label for="username">Nazwa Użytkownika:</label><br>
-            <input class="pole" require type="text" name="username" id="username" required></input><br>
-            <label for="password">Hasło:</label><br>
+            <label for="username">Username:</label><br>
+            <input class="pole" type="text" name="username" id="username" required></input><br>
+            <label for="password">Password:</label><br>
             <input class="pole" type="password" name="password" id="password" required></input><br>
-            <input class="p-kolor" type="submit" value="Zaloguj">
+            <input class="p-kolor" type="submit" value="Log in">
         </form>
         <?php
         if($error){
