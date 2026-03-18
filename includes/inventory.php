@@ -22,7 +22,7 @@ if ($all_val > 0) {
     echo '<form action="includes/sell.php" method="post">
         <input type="hidden" name="i_id" value="all">
         <input type="hidden" name="back" value="profile.php">
-        <input type="submit" value="Sell All ' . $all_val . 'vPLN">
+        <input type="submit" value="Sell All for ' . $all_val . ' vPLN">
     </form>';
 }
 
