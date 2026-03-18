@@ -56,17 +56,14 @@
         echo "<h2>" . $w['username'] . "</h2>";
         echo "<p>Wallet: <b>" . $w['wallet'] . "</b> vPLN.</p>";
         echo '<div>
-                <h2>Inventory</h2>
-                <div>';
-                    include "includes/inventory.php";
-        echo '</div>
-            </div>';
+                <h2>Inventory</h2>';
+                include "includes/inventory.php";
+        echo '</div>';
+        return;
     } else {
         echo "<p style='color:red;'><b>Error 404</b></p>";
         die;
     }
-    ?>
-    
-    
+    ?>  
 </body>
 </html>
