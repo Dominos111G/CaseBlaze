@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    font-family: Arial;
+    background: aliceblue;
+    color: black;
+}
+main {
+    text-align: center;
+    padding: 40px;
+}
+.wallet-grid {
+    width: 1000px;
+    margin: 0 auto;
+    color: antiquewhite;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+.money {
+    width: 100%;
+    height: 220px;
+    background: darkblue;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.money-image {
+    width: 100px;   
+    height: 100px;  
+    object-fit: contain;
+}
+.money h3 {
+    margin: 5px 0;
+    font-size: 18px;
+}
+button {
+    width: 100%;
+    padding: 8px;
+    background: green;
+    border: none;
+    border-radius: 6px;
+    color: white;
+}
+button:hover {
+    background: #16a34a;
+}

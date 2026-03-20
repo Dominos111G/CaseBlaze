@@ -16,23 +16,46 @@ $user_id = $_SESSION['user_id'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaseBlaze - Wallet</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/wallet.css">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
+    <main>
+        <h2>Doładowania</h2>
+        <div class="wallet-grid">
+            <div class="money">
+                <img class="money-image" src="/caseblaze/img/wallet/20.png" alt="Money Image">
+                <h3>20 vPLN</h3>
+                <form method="POST">
+                    <button type="submit" name="add" value="20">Doładuj</button>
+                </form>
+            </div>
+            <div class="money">
+                <img class="money-image" src="/caseblaze/img/wallet/50.png" alt="Money Image">
+                <h3>50 vPLN</h3>
+                <form method="POST">
+                    <button type="submit" name="add" value="50">Doładuj</button>
+                </form>
+            </div>
+            <div class="money">
+                <img class="money-image" src="/caseblaze/img/wallet/100.png" alt="Money Image">
+                <h3>100 vPLN</h3>
+                <form method="POST">
+                    <button type="submit" name="add" value="100">Doładuj</button>
+                </form>
+            </div>
+            <div class="money">
+                <img class="money-image" src="/caseblaze/img/wallet/200.png" alt="Money Image">
+                <h3>200 vPLN</h3>
+                <form method="POST">
+                    <button type="submit" name="add" value="200">Doładuj</button>
+                </form>
+            </div>
+        </div>
+    </main>
     <div>
-        <form method="POST">
-            <button type="submit" name="add" value="20">Dodaj 20 vPLN</button>
-        </form>
-        <form method="POST">
-            <button type="submit" name="add" value="50">Dodaj 50 vPLN</button>
-        </form>
-        <form method="POST">
-            <button type="submit" name="add" value="100">Dodaj 100 vPLN</button>
-        </form>
-        <form method="POST">
-            <button type="submit" name="add" value="200">Dodaj 200 vPLN</button>
-        </form>
         <?php
+        
             if (isset($_POST['add'])) {
                 $amount = $_POST['add'];  
                 $cookie_name = "cooldown" . $amount;
@@ -42,13 +65,13 @@ $user_id = $_SESSION['user_id'];
 
                 $stmt = $conn->prepare("UPDATE users SET wallet = wallet + ? WHERE id = ?");
                 $stmt->bind_param("di", $amount, $user_id);
-
+                
                 if ($stmt->execute()) {
                     $cookie_value = true;
                     setcookie($cookie_name, $cookie_value, time() + (60 * 5), "/"); 
-                    echo "Doładowano portfel!";
+                    echo "<script>alert('Doładowano portfel!');</script>";
                 } else {
-                    echo "Błąd!";
+                    echo "<script>alert('Błąd!');</script>";
                 }
             }
         ?>
