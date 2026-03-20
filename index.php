@@ -12,7 +12,7 @@
 <body>
     <?php include 'includes/navigation.php'; ?>
     
-    <main>
+    <main style="margin-top:20px;">
         <?php
             include 'includes/connect.php';
             $query = 'SELECT * FROM crates ORDER BY price ASC;';
@@ -35,7 +35,7 @@
                     }
                 }
             }
-            echo '<h2>Free Crates</h2>
+            echo '<div class="crate-header"><h2>Free Crates</h2></div>
             <div class="chest-grid">';
             foreach ($freeCrates as $r) {
                 $fprice = $r['price'];
@@ -56,7 +56,7 @@
             }
             echo '</div>';
             
-            echo '<h2>Main Crates</h2>
+            echo '<div class="crate-header"><h2>Main Crates</h2></div>
             <div class="chest-grid">';
             foreach ($mainCrates as $r) {
                 $fprice = $r['price'] . " vPLN";
@@ -72,7 +72,7 @@
             }
             echo '</div>';
             
-            echo '<h2>Special Crates</h2>
+            echo '<div class="crate-header"><h2>Special Crates</h2></div>
             <div class="chest-grid">';
             foreach ($premiumCrates as $r) {
                 $fprice = $r['price'] . " vPLN";

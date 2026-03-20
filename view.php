@@ -437,6 +437,7 @@ if ($crate['visible'] == 0) {
 
                         // Pokaż wynik po krótkim opóźnieniu
                         setTimeout(() => {
+                            this.disabled = false;
                             showResult(data.selected_item);
                         }, 1500);
                     } else {
