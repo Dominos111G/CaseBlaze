@@ -20,32 +20,32 @@ $user_id = $_SESSION['user_id'];
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
-    <main>
-        <h2>Doładowania</h2>
+    <main style="margin-top:20px;">
+        <div class="wallet-header"><h2>Doładowania</h2></div>
         <div class="wallet-grid">
             <div class="money">
-                <img class="money-image" src="/caseblaze/img/wallet/20.png" alt="Money Image">
+                <img class="money-image" src="/img/wallet/20.png" alt="Money Image">
                 <h3>20 vPLN</h3>
                 <form method="POST">
                     <button type="submit" name="add" value="20">Doładuj</button>
                 </form>
             </div>
             <div class="money">
-                <img class="money-image" src="/caseblaze/img/wallet/50.png" alt="Money Image">
+                <img class="money-image" src="/img/wallet/50.png" alt="Money Image">
                 <h3>50 vPLN</h3>
                 <form method="POST">
                     <button type="submit" name="add" value="50">Doładuj</button>
                 </form>
             </div>
             <div class="money">
-                <img class="money-image" src="/caseblaze/img/wallet/100.png" alt="Money Image">
+                <img class="money-image" src="/img/wallet/100.png" alt="Money Image">
                 <h3>100 vPLN</h3>
                 <form method="POST">
                     <button type="submit" name="add" value="100">Doładuj</button>
                 </form>
             </div>
             <div class="money">
-                <img class="money-image" src="/caseblaze/img/wallet/200.png" alt="Money Image">
+                <img class="money-image" src="/img/wallet/200.png" alt="Money Image">
                 <h3>200 vPLN</h3>
                 <form method="POST">
                     <button type="submit" name="add" value="200">Doładuj</button>
@@ -55,7 +55,6 @@ $user_id = $_SESSION['user_id'];
     </main>
     <div>
         <?php
-        
             if (isset($_POST['add'])) {
                 $amount = $_POST['add'];  
                 $cookie_name = "cooldown" . $amount;
