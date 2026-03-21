@@ -73,7 +73,7 @@ $user_id = $_SESSION['user_id'];
                 $cookie_name = "cooldown" . $amount;
                 
                 if (isset($_COOKIE[$cookie_name])) {
-                    echo "<script>alert('Musisz poczekać 5 minut przed kolejnym doładowaniem tej kwoty!');</script>";
+                    echo "<script>alert('You need to wait before doing this again!');</script>";
                 } else {
                     $stmt = $conn->prepare("UPDATE users SET wallet = wallet + ? WHERE id = ?");
                     $stmt->bind_param("di", $amount, $user_id);
@@ -81,10 +81,10 @@ $user_id = $_SESSION['user_id'];
                     if ($stmt->execute()) {
                         $cookie_value = time() + (60 * 5); // Zapisz timestamp zakończenia cooldownu
                         setcookie($cookie_name, $cookie_value, time() + (60 * 5), "/"); 
-                        echo "<script>alert('Doładowano portfel!');</script>";
+                        echo "<script>alert('Money added to your wallet!');</script>";
                         echo "<script>window.location.href = window.location.href;</script>"; // Odśwież stronę
                     } else {
-                        echo "<script>alert('Błąd!');</script>";
+                        echo "<script>alert('Error!');</script>";
                     }
                 }
             }
