@@ -8,15 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaseBlaze - Leaderboard</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
     
-    <h1>Leaderboard</h1>
+    <div class="header"><h1 >Leaderboards</h1></div>
 
     <main>
-        <div>
-            <h2>Most vPLN</h2>
+        <div class="leaderboard">
+            <h2 class="header">Most vPLN</h2>
             <table>
                 <tr>
                     <th style='min-width: 20px'>Place</th>
@@ -30,7 +31,7 @@
                     $place = 1;
                     foreach ($w_result as $r) {
                         echo '<tr>
-                                <td>' . $place . '</td>
+                                <td style="text-align:center;">' . $place . '</td>
                                 <td><a href="/profile.php?uid=' . $r['id'] . '">' . $r['username'] . '</td>
                                 <td style="text-align: right;">' . $r['wallet'] . ' vPLN</td>
                             </tr>';
@@ -43,8 +44,8 @@
             </table>
         </div>
 
-        <div>
-            <h2>Most vPLN In Items</h2>
+        <div class="leaderboard">
+            <h2 class="header">Most vPLN In Items</h2>
             <table>
                 <tr>
                     <th style='min-width: 20px'>Place</th>
@@ -74,7 +75,7 @@
                         $formatted_value = number_format($r['total_value'], 2, '.', ',');
                         
                         echo '<tr>
-                                <td>' . $place . '</td>
+                                <td style="text-align:center;">' . $place . '</td>
                                 <td><a href="/profile.php?uid=' . (int)$r['id'] . '">' .
                                     htmlspecialchars($r['username']) . '</a></td>
                                 <td style="text-align: right;">' . $formatted_value . ' vPLN</td>
