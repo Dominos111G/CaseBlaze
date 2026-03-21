@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaseBlaze - Profile</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/inv.css">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
@@ -56,7 +57,7 @@
         echo "<h2>" . $w['username'] . "</h2>";
         echo "<p>Wallet: <b>" . $w['wallet'] . "</b> vPLN.</p>";
         echo '<div>
-                <h2>Inventory</h2>';
+                <div class="header"><h2>Inventory</h2></div>';
                 include "includes/inventory.php";
         echo '</div>';
         return;

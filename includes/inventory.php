@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="/css/inv.css">
 <?php
 
 if (!isset($id)) {
@@ -9,16 +8,18 @@ if (!isset($id)) {
 $i_query = "SELECT eq.id as 'i_id', i.name, i.img, e.name as 'zuzycie', q.name as 'jakosc', i.sell_price, i.description FROM (((inventory as eq INNER JOIN users as u ON eq.user_id=u.id) INNER JOIN items as i ON eq.item_id=i.id) INNER JOIN quality as q ON i.quality_id=q.id) INNER JOIN exteriors as e ON i.exterior_id=e.id WHERE u.id = '$id' ORDER BY i.sell_price DESC;";
 $i_result = $conn->query($i_query);
 
-$all_val = 0;
-if ($i_result->num_rows > 0) {
-    foreach ($i_result as $w) {
-        $all_val += $w['sell_price'];
+if ($id == $_SESSION['user_id']) {
+    $all_val = 0;
+    if ($i_result->num_rows > 0) {
+        foreach ($i_result as $w) {
+            $all_val += $w['sell_price'];
+        }
     }
 }
 ?>
 
 <?php 
-if ($all_val > 0) {
+if (isset($all_val) && $all_val > 0) {
     echo '<form action="includes/sell.php" method="post">
         <input type="hidden" name="i_id" value="all">
         <input type="hidden" name="back" value="profile.php">
@@ -48,6 +49,6 @@ if ($i_result->num_rows > 0) {
     }
     echo '</div>';
 } else {
-    echo "<p>Ekwipunek jest pusty!</p>";
+    echo "<p style='text-align: center;'>Ekwipunek jest pusty!</p>";
 }
 ?>
