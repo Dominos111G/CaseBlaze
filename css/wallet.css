@@ -69,3 +69,6 @@ button[type="submit"] {
     justify-self: end;
     font-size: 18px;
 }
+button[type="submit"]:disabled {
+    background: linear-gradient(135deg, #2c4dc5 0%, #0a2799 100%);
+}
