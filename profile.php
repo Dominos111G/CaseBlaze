@@ -1,6 +1,15 @@
 <?php include 'includes/config.php'; ?>
 <?php include 'includes/connect.php'; ?>
 
+<?php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST['i_id'])) {
+        $query = "UPDATE inventory SET locked = NOT locked WHERE id = " . $_POST['i_id'] . ";";
+        $conn->query($query);
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -8,6 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaseBlaze - Profile</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/inv.css">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
@@ -54,19 +64,16 @@
 
     if ($w > 0) {
         echo "<h2>" . $w['username'] . "</h2>";
-        echo "<p>Stan portfela: <b>" . $w['wallet'] . "</b> vPLN.</p>";
+        echo "<p>Wallet: <b>" . $w['wallet'] . "</b> vPLN.</p>";
         echo '<div>
-                <h2>Ekwipunek</h2>
-                <div>';
-                    include "includes/inventory.php";
-        echo '</div>
-            </div>';
+                <div class="header"><h2>Inventory</h2></div>';
+                include "includes/inventory.php";
+        echo '</div>';
+        return;
     } else {
-        echo "<p style='color:red;'><b>Błąd 404</b>: nie znaleziono strony.</p>";
+        echo "<p style='color:red;'><b>Error 404</b></p>";
         die;
     }
-    ?>
-    
-    
+    ?>  
 </body>
 </html>
