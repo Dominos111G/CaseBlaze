@@ -54,31 +54,33 @@
     width: 100%;
 }
 .item .inp {
-    padding: 15px;
-    width: 75%;
+    padding: 12px auto;
+    width: 76%;
     color: white;
     background-color: #667eea;
     border-radius: 10px;
     border: none;
     justify-self: end;
-    font-size: 18px;
+    font-size: 17px;
     float: left;
     cursor: pointer;
+    height: 55px;
 }
 .item .inp:disabled {
-    padding: 15px;
-    width: 75%;
+    padding: 12px auto;
+    width: 76%;
     color: white;
     background-color: #3f4d8d88;
     border-radius: 10px;
     border: none;
     justify-self: end;
-    font-size: 18px;
+    font-size: 17px;
     float: left;
     cursor: not-allowed;
+    height: 55px;
 }
 .item .inp-lock {
-    padding: 15px 0;
+    padding: 15px auto;
     width: 20%;
     color: white;
     background-color: #667eea;
@@ -88,6 +90,7 @@
     font-size: 18px;
     float: right;
     cursor: pointer;
+    height: 55px;
 }
 .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
