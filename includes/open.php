@@ -89,7 +89,7 @@ elseif ($user['wallet'] < $crate['price']) {
 
 // Pobierz wszystkie przedmioty ze skrzynki z ich wagami
 $items_query = "
-    SELECT i.*, e.rate as exterior_rate, q.rate as quality_rate 
+    SELECT DISTINCT i.*, e.rate as exterior_rate, q.rate as quality_rate 
     FROM crate_item ci
     INNER JOIN items i ON ci.item_id = i.id
     INNER JOIN exteriors e ON i.exterior_id = e.id

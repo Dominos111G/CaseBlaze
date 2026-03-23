@@ -1,6 +1,12 @@
 <?php include 'includes/config.php'; ?>
 <?php include 'includes/connect.php'; ?>
 
+<?php
+$uid = -1;
+if (isset($_SESSION["user_id"])) {
+    $uid = $_SESSION["user_id"];
+}
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -30,7 +36,11 @@
                 if ($w_result->num_rows > 0) {
                     $place = 1;
                     foreach ($w_result as $r) {
-                        echo '<tr>
+                        $styl = "";
+                        if ($r['id'] == $uid) { 
+                            $styl = 'style="background-color: #82b8f5;"';
+                        }
+                        echo '<tr ' . $styl . '>
                                 <td style="text-align:center;">' . $place . '</td>
                                 <td><a href="/profile.php?uid=' . $r['id'] . '">' . $r['username'] . '</td>
                                 <td style="text-align: right;">' . $r['wallet'] . ' vPLN</td>
@@ -74,7 +84,11 @@
                     while ($r = $i_result->fetch_assoc()) {
                         $formatted_value = number_format($r['total_value'], 2, '.', ',');
                         
-                        echo '<tr>
+                        $styl = "";
+                        if ($r['id'] == $uid) { 
+                            $styl = 'style="background-color: #82b8f5;"';
+                        }
+                        echo '<tr ' . $styl . '>
                                 <td style="text-align:center;">' . $place . '</td>
                                 <td><a href="/profile.php?uid=' . (int)$r['id'] . '">' .
                                     htmlspecialchars($r['username']) . '</a></td>

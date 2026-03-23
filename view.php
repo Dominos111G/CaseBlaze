@@ -179,10 +179,6 @@ if ($crate['visible'] == 0) {
 
                     <div class="opening-container" id="openingContainer" style="display: none;">
                         <div class="items-slider" id="itemsSlider"></div>
-                        <div class="slider-controls">
-                            <button class="slider-btn" id="prevBtn" disabled>←</button>
-                            <button class="slider-btn" id="nextBtn" disabled>→</button>
-                        </div>
                     </div>
                 </div>
             <?php else: ?>
@@ -191,10 +187,10 @@ if ($crate['visible'] == 0) {
                 </div>
             <?php endif; ?>
 
-            <h2 style="margin: 40px 0 20px; color: #333;">Przedmioty w skrzynce</h2>
+            <h2 class="crate-header">Przedmioty w skrzynce</h2>
             
             <?php
-            $i_query = "SELECT i.*, e.name as exterior_name, q.name as quality_name 
+            $i_query = "SELECT DISTINCT i.*, e.name as exterior_name, q.name as quality_name 
                        FROM crate_item ci 
                        INNER JOIN items i ON ci.item_id = i.id 
                        LEFT JOIN exteriors e ON i.exterior_id = e.id
@@ -247,8 +243,6 @@ if ($crate['visible'] == 0) {
         // Elementy DOM
         const openBtn = document.getElementById('openCrateBtn');
         const slider = document.getElementById('itemsSlider');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
         const openingContainer = document.getElementById('openingContainer');
         const loading = document.getElementById('loading');
         const resultModal = document.getElementById('resultModal');
@@ -339,10 +333,6 @@ if ($crate['visible'] == 0) {
                 slider.scrollLeft = targetScroll;
                 currentPosition = winningPosition;
             }, 100);
-
-            // Włącz przyciski
-            prevBtn.disabled = false;
-            nextBtn.disabled = false;
         }
 
         function moveSlider(direction) {
@@ -376,12 +366,6 @@ if ($crate['visible'] == 0) {
 
         function closeResult() {
             resultModal.style.display = 'none';
-        }
-
-        // Event listeners dla slidera
-        if (prevBtn && nextBtn) {
-            prevBtn.addEventListener('click', () => moveSlider(-1));
-            nextBtn.addEventListener('click', () => moveSlider(1));
         }
 
         // Otwieranie skrzynki

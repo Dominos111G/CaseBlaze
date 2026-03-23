@@ -72,7 +72,7 @@ $user_id = $_SESSION['user_id'];
                 $amount = $_POST['add'];  
                 $cookie_name = "cooldown" . $amount;
                 
-                if (isset($_COOKIE[$cookie_name])) {
+                if (isset($_COOKIE[$cookie_name]) && $_COOKIE[$cookie_name] >= time()) {
                     echo "<script>alert('You need to wait before doing this again!');</script>";
                 } else {
                     $stmt = $conn->prepare("UPDATE users SET wallet = wallet + ? WHERE id = ?");
@@ -80,7 +80,7 @@ $user_id = $_SESSION['user_id'];
                     
                     if ($stmt->execute()) {
                         $cookie_value = time() + (60 * 5); // Zapisz timestamp zakończenia cooldownu
-                        setcookie($cookie_name, $cookie_value, time() + (60 * 5), "/"); 
+                        setcookie($cookie_name, $cookie_value, time() + (60 * 60 * 24 * 30), "/"); 
                         echo "<script>alert('Money added to your wallet!');</script>";
                         echo "<script>window.location.href = window.location.href;</script>"; // Odśwież stronę
                     } else {
