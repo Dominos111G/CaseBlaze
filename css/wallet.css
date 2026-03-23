@@ -68,7 +68,9 @@ button[type="submit"] {
     border: none;
     justify-self: end;
     font-size: 18px;
+    cursor: pointer;
 }
 button[type="submit"]:disabled {
     background: linear-gradient(135deg, #2c4dc5 0%, #0a2799 100%);
+    cursor: not-allowed;
 }
