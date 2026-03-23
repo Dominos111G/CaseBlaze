@@ -29,7 +29,7 @@ if ($item_id === "all") {
         $query = "SELECT inv.id, i.sell_price 
                   FROM inventory AS inv 
                   INNER JOIN items AS i ON inv.item_id = i.id 
-                  WHERE inv.user_id = ?";
+                  WHERE inv.user_id = ? AND inv.locked = 0";
         
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $user_id);

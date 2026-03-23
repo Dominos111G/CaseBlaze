@@ -50,15 +50,44 @@
 .item p {
     min-height: 20px;
 }
-.item input[type="submit"] {
-    padding: 15px;
+.inp-box {
     width: 100%;
+}
+.item .inp {
+    padding: 15px;
+    width: 75%;
     color: white;
     background-color: #667eea;
     border-radius: 10px;
     border: none;
     justify-self: end;
     font-size: 18px;
+    float: left;
+    cursor: pointer;
+}
+.item .inp:disabled {
+    padding: 15px;
+    width: 75%;
+    color: white;
+    background-color: #3f4d8d88;
+    border-radius: 10px;
+    border: none;
+    justify-self: end;
+    font-size: 18px;
+    float: left;
+    cursor: not-allowed;
+}
+.item .inp-lock {
+    padding: 15px 0;
+    width: 20%;
+    color: white;
+    background-color: #667eea;
+    border-radius: 10px;
+    border: none;
+    justify-self: end;
+    font-size: 18px;
+    float: right;
+    cursor: pointer;
 }
 .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

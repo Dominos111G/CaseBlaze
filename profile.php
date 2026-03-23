@@ -1,6 +1,15 @@
 <?php include 'includes/config.php'; ?>
 <?php include 'includes/connect.php'; ?>
 
+<?php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST['i_id'])) {
+        $query = "UPDATE inventory SET locked = NOT locked WHERE id = " . $_POST['i_id'] . ";";
+        $conn->query($query);
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
