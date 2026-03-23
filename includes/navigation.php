@@ -22,7 +22,7 @@ if (isset($_SESSION['user_id'])) {
             <li><a href="/profile.php">Profile</a></li>
 
             <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']==1)
-                echo '<li><a href="/admin.php">Admin</a></li>'; ?>
+                echo '<li><a style="color: #f05858;" href="/admin.php">Admin</a></li>'; ?>
                 
             <li><?php if (isset($_SESSION['username'])) {echo $_SESSION['username'];} else {echo "User";} ?></li>
             <li id='wallet'><?php if (isset($_SESSION['wallet'])) {echo $_SESSION['wallet'] . " vPLN";} else {echo "0 vPLN";} ?></li>
