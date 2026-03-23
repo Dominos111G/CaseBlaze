@@ -410,9 +410,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         FROM quality;";
             $q_result = $conn->query($q_query);
             
+            $q_opt = "";
+            foreach ($q_result as $r) {
+                $q_opt .= '<option value="' . $r['id'] . '">' . $r['name'] . '</option>';
+            }
+
             $ex_query = "SELECT id, name
                         FROM exteriors;";
             $ex_result = $conn->query($ex_query);
+            
+            $ex_opt = "";
+            foreach ($ex_result as $r) {
+                $ex_opt .= '<option value="' . $r['id'] . '">' . $r['name'] . '</option>';
+            }
             
             if ($i_result->num_rows > 0){
                 echo '<table>
@@ -452,13 +462,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             <form method="post">
                                 <input type="hidden" name="i_etype" value="change_exterior">
                                 <input type="hidden" name="iid" value="' . $id . '">
-                                <select name="exterior">';
-
-                                foreach ($ex_result as $r) {
-                                    echo '<option value="' . $r['id'] . '">' . $r['name'] . '</option>';
-                                }
-
-                            echo '</select>
+                                <select name="exterior">'
+                                . $ex_opt .
+                                '</select>
                                 <input type="submit" value="Change">
                             </form>
                         </td>
@@ -466,13 +472,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             <form method="post">
                                 <input type="hidden" name="i_etype" value="change_quality">
                                 <input type="hidden" name="iid" value="' . $id . '">
-                                <select name="exterior">';
-
-                                foreach ($q_result as $r) {
-                                    echo '<option value="' . $r['id'] . '">' . $r['name'] . '</option>';
-                                }
-
-                            echo '</select>
+                                <select name="exterior">'
+                                . $q_opt .
+                                '</select>
                                 <input type="submit" value="Change">
                             </form>
                         </td>
