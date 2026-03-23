@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $s_f = $s_result->fetch_assoc();
         if ($s_f > 0) {
             $id = $s_f['id'];
-            header("Location: /profile.php?uid=$id");
+            header("Location: profile.php?uid=$id");
             exit;
         } else {
             echo '<p style="color: red;">Couldn\'t find user.';
