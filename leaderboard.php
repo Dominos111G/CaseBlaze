@@ -31,7 +31,8 @@ if (isset($_SESSION["user_id"])) {
                     <th style='min-width: 50px'>Value</th>
                 </tr>
                 <?php
-                $w_query = "SELECT id, username, wallet FROM users ORDER BY wallet DESC LIMIT 50;";
+                $goal = 10;
+                $w_query = "SELECT id, username, wallet FROM users ORDER BY wallet DESC LIMIT " . $goal . ";";
                 $w_result = $conn->query($w_query);
                 if ($w_result->num_rows > 0) {
                     $place = 1;
@@ -46,6 +47,14 @@ if (isset($_SESSION["user_id"])) {
                                 <td style="text-align: right;">' . $r['wallet'] . ' vPLN</td>
                             </tr>';
                         $place++;
+                    }
+                    for ($i=$place; $i <= $goal; $i++) {
+                        echo '<tr>
+                                <td style="text-align:center;">' . $i . '</td>
+                                <td></td>
+                                <td style="text-align: right;"></td>
+                            </tr>';
+                        
                     }
                 } else {
                     echo "<tr><td colspan=3 style='text-align: center;'>No records found</td></tr>";
@@ -64,6 +73,7 @@ if (isset($_SESSION["user_id"])) {
                     <th style='min-width: 30px'>Amount</th>
                 </tr>
                 <?php
+                $goal = 10;
                 $i_query = "SELECT 
                                 u.id, 
                                 u.username,
@@ -75,7 +85,7 @@ if (isset($_SESSION["user_id"])) {
                             GROUP BY u.id, u.username
                             HAVING total_value > 0
                             ORDER BY total_value DESC, item_count ASC, u.username ASC
-                            LIMIT 50;";
+                            LIMIT " . $goal . ";";
                 
                 $i_result = $conn->query($i_query);
                 
@@ -96,6 +106,15 @@ if (isset($_SESSION["user_id"])) {
                                 <td style="text-align: center;">' . $r['item_count'] . '</td>
                             </tr>';
                         $place++;
+                    }
+                    for ($i=$place; $i <= $goal; $i++) {
+                        echo '<tr>
+                                <td style="text-align:center;">' . $i . '</td>
+                                <td></td>
+                                <td style="text-align: right;"></td>
+                                <td style="text-align: center;"></td>
+                            </tr>';
+                        
                     }
                 } else {
                     echo "<tr><td colspan='4' style='text-align: center;'>No records found</td></tr>";
