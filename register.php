@@ -21,7 +21,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $query = "SELECT * FROM users WHERE username='$username' OR email='$email'";
         $result = $conn->query($query);
         if($result->num_rows > 0){
-            if ($result->fetch_assoc['email'] == $email) {
+            $row = $result->fetch_assoc();
+            if ($row['email'] == $email) {
                 $error = "Email is already used.";
             } else {
                 $error = "Username is already used.";
@@ -47,22 +48,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaseBlaze - Register</title>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/register.css">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
     
     <main class="div">
-        <h1 class="cent-text">Register</h1><br>
-        <?php
-        if($error){
-            echo"<p style='color: red'>$error</p><br>";
-        } else if ($ret) {
-            echo"<p style='color: green'>$ret</p><br>";
-        }
-        ?>
+        
     
         <form class="cent-form" action="" method="POST">
+            <?php
+                if($error){
+                    echo"<p style='color: red'>$error</p><br>";
+                } else if ($ret) {
+                    echo"<p style='color: green'>$ret</p><br>";
+                }
+            ?>
+            <h1 class="cent-text">Register</h1><br>
             <label for="email">Email:</label><br>
             <input require type="email" name="email" id="email" required></input><br>
             <label for="username">Username:</label><br>
