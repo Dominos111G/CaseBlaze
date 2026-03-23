@@ -28,8 +28,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             }
         } else{
             $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
-            $add_query = "INSERT INTO `users`(`username`, `password`, `email`, `wallet`, `daily_crate`, `weekly_crate`)
-                    VALUES ('$username','$hashedpassword','$email', 10, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY)";
+            $add_query = "INSERT INTO `users`(`username`, `password`, `email`, `wallet`, `daily_crate`, `weekly_crate`, `20vpln`, `50vpln`, `100vpln`, `200vpln`)
+                    VALUES ('$username','$hashedpassword','$email', 10, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY)";
         
             if($conn->query($add_query)) {
                 $ret = "User added successfully.";

@@ -1,12 +1,59 @@
-<?php include 'includes/connect.php'; ?>
-<?php include 'includes/config.php'; ?>
 <?php 
+include 'includes/connect.php'; 
+include 'includes/config.php'; 
+
 if (!isset($_SESSION['user_id'])) {
-    die("Nie jesteś zalogowany!");
-    echo"<button><a href='\login.php'>Zaloguj się<button>";
+    die("Nie jesteś zalogowany! <a href='/login.php'><button>Zaloguj się</button></a>");
 }
 
 $user_id = $_SESSION['user_id'];
+$times = [20 => 10, 50 => 30, 100 => 45, 200 => 60];
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add'])) {
+    $amount = filter_var($_POST['add'], FILTER_VALIDATE_INT);
+    
+    if (!array_key_exists($amount, $times)) {
+        die("Invalid amount");
+    }
+    
+    $col_name = $amount . "vpln";
+    $current_time = time();
+    $conn->begin_transaction();
+    
+    try {
+        $stmt_check = $conn->prepare("SELECT `$col_name` FROM users WHERE id = ?");
+        $stmt_check->bind_param("i", $user_id);
+        $stmt_check->execute();
+        $row = $stmt_check->get_result()->fetch_assoc();
+        $current_db_time = $row[$col_name] ?? 0;
+        $stmt_check->close();
+        
+        if ($current_db_time > $current_time) {
+            throw new Exception("Cooldown!");
+        }
+
+        $new_time = $current_time + ($times[$amount] * 60);
+        
+        $stmt_w = $conn->prepare("UPDATE users SET wallet = wallet + ? WHERE id = ?");
+        $stmt_w->bind_param("di", $amount, $user_id);
+        
+        $stmt_t = $conn->prepare("UPDATE users SET `$col_name` = ? WHERE id = ?");
+        $stmt_t->bind_param("ii", $new_time, $user_id);
+        
+        if ($stmt_t->execute() && $stmt_w->execute()) {
+            $conn->commit();
+            $_SESSION[$col_name] = $new_time; // Synchronizacja sesji dla JS
+            
+            // Przekierowanie zapobiega ponownemu wysłaniu formularza przy odświeżeniu (F5)
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            throw new Exception("Save error.");
+        }
+    } catch (Exception $e) {
+        $conn->rollback();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -66,95 +113,44 @@ $user_id = $_SESSION['user_id'];
             </div>
         </div>
     </main>
-    <div>
-        <?php
-            if (isset($_POST['add'])) {
-                $amount = $_POST['add'];  
-                $cookie_name = "cooldown" . $amount;
-                
-                if (isset($_COOKIE[$cookie_name]) && $_COOKIE[$cookie_name] >= time()) {
-                    echo "<script>alert('You need to wait before doing this again!');</script>";
-                } else {
-                    $stmt = $conn->prepare("UPDATE users SET wallet = wallet + ? WHERE id = ?");
-                    $stmt->bind_param("di", $amount, $user_id);
-                    
-                    if ($stmt->execute()) {
-                        $cookie_value = time() + (5 + 60 * ($amount / 10) * 2); // Zapisz timestamp zakończenia cooldownu
-                        setcookie($cookie_name, $cookie_value, time() + (60 * 60 * 24 * 30), "/");
-                    } else {
-                        echo "<script>alert('Error!');</script>";
-                    }
-                }
-            }
-        ?>
-    </div>
     
     <script>
-    // Funkcja do odliczania czasu
     function updateTimers() {
         const amounts = [20, 50, 100, 200];
         
+        // Pobieramy czasy wygaśnięcia z sesji PHP do obiektu JS
+        const endTimes = {
+            20: <?= $_SESSION['20vpln'] ?? 0 ?>,
+            50: <?= $_SESSION['50vpln'] ?? 0 ?>,
+            100: <?= $_SESSION['100vpln'] ?? 0 ?>,
+            200: <?= $_SESSION['200vpln'] ?? 0 ?>
+        };
+        
         amounts.forEach(amount => {
-            const cookieName = `cooldown${amount}`;
-            const endTime = getCookie(cookieName);
+            const endTime = endTimes[amount];
             const button = document.getElementById(`btn_${amount}`);
-            const timerSpan = document.getElementById(`btn_${amount}`);
-            
-            if (endTime) {
+
+            if (endTime > 0) {
                 const currentTime = Math.floor(Date.now() / 1000);
                 const timeLeft = endTime - currentTime;
                 
                 if (timeLeft > 0) {
-                    // Wyłącz przycisk
-                    if (button) {
-                        button.disabled = true;
-                    }
+                    button.disabled = true;
                     
-                    // Formatuj pozostały czas
                     const minutes = Math.floor(timeLeft / 60);
                     const seconds = timeLeft % 60;
                     const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
                     
-                    if (timerSpan) {
-                        timerSpan.textContent = `Wait: ${timeString}`;
-                    }
+                    button.textContent = `Wait: ${timeString}`;
                 } else {
-                    // Odblokuj przycisk i wyczyść timer
-                    if (button) {
-                        button.disabled = false;
-                    }
-                    if (timerSpan) {
-                        timerSpan.textContent = '';
-                    }
-                    // Usuń przeterminowane ciasteczko
-                    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                }
-            } else {
-                // Brak cooldownu - odblokuj przycisk
-                if (button) {
                     button.disabled = false;
-                }
-                if (timerSpan) {
-                    timerSpan.textContent = 'Collect';
+                    button.textContent = 'Collect';
                 }
             }
         });
     }
-    
-    // Funkcja do pobierania ciasteczek
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            return parseInt(parts.pop().split(';').shift());
-        }
-        return null;
-    }
-    
-    // Aktualizuj timery co sekundę
+
     setInterval(updateTimers, 1000);
-    
-    // Uruchom timery przy ładowaniu strony
     document.addEventListener('DOMContentLoaded', updateTimers);
     </script>
 </body>
