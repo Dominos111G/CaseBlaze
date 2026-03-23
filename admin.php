@@ -7,6 +7,76 @@ if ($_SESSION['is_admin'] == 0) {
 }
 ?>
 
+<?php
+if ($_SESSION['is_admin'] == 0) {
+    header("Location: /index.php");
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+    if (isset($_POST['u_etype'])) {
+        $uid = (int)$_POST['uid'];
+
+        if ($_POST['u_etype'] == "remove_user") {
+            $conn->query("DELETE FROM users WHERE id = $uid");
+        } 
+        elseif ($_POST['u_etype'] == "change_username") {
+            $username = $_POST['username'];
+            $stmt = $conn->prepare("UPDATE users SET username = ? WHERE id = ?");
+            $stmt->bind_param("si", $username, $uid);
+            $stmt->execute();
+        } 
+        elseif ($_POST['u_etype'] == "change_email") {
+            $email = $_POST['email'];
+            $stmt = $conn->prepare("UPDATE users SET email = ? WHERE id = ?");
+            $stmt->bind_param("si", $email, $uid);
+            $stmt->execute();
+        } 
+        elseif ($_POST['u_etype'] == "change_wallet") {
+            $wallet = $_POST['wallet'];
+            $stmt = $conn->prepare("UPDATE users SET wallet = ? WHERE id = ?");
+            $stmt->bind_param("di", $wallet, $uid);
+            $stmt->execute();
+        } 
+        elseif ($_POST['u_etype'] == "change_admin") {
+            $conn->query("UPDATE users SET is_admin = 1 - is_admin WHERE id = $uid");
+        }
+    }
+
+
+    if (isset($_POST['c_etype'])) {
+        $cid = (int)$_POST['cid'];
+
+        if ($_POST['c_etype'] == "rem_crate") {
+            $conn->query("DELETE FROM crates WHERE id = $cid");
+        } 
+        elseif ($_POST['c_etype'] == "change_name") {
+            $name = $_POST['name'];
+            $stmt = $conn->prepare("UPDATE crates SET name = ? WHERE id = ?");
+            $stmt->bind_param("si", $name, $cid);
+            $stmt->execute();
+        }
+        elseif ($_POST['c_etype'] == "add_item") {
+            $item_id = (int)$_POST['item_id'];
+            $stmt = $conn->prepare("INSERT INTO crate_item (crate_id, item_id) VALUES (?, ?)");
+            $stmt->bind_param("ii", $cid, $item_id);
+            $stmt->execute();
+        }
+    }
+
+    if (isset($_POST['c_atype']) && $_POST['c_atype'] == "add_chest") {
+        $name = $_POST['name'];
+        $desc = $_POST['desc'];
+        $price = $_POST['price'];
+        
+        $stmt = $conn->prepare("INSERT INTO crates (name, description, price, visible) VALUES (?, ?, ?, 1)");
+        $stmt->bind_param("ssd", $name, $desc, $price);
+        $stmt->execute();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
