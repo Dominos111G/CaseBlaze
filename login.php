@@ -27,6 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['wallet'] = $user['wallet'];
             $_SESSION['fdc'] = $user['daily_crate'];
             $_SESSION['fwc'] = $user['weekly_crate'];
+            $_SESSION['20vpln'] = $user['20vpln'];
+            $_SESSION['50vpln'] = $user['50vpln'];
+            $_SESSION['100vpln'] = $user['100vpln'];
+            $_SESSION['200vpln'] = $user['200vpln'];
             header("Location: index.php");
             exit;
         } else {
