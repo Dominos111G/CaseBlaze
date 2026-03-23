@@ -52,7 +52,7 @@ if ($_SESSION['is_admin'] == 0) {
 
             if ($options == null) {
                 echo "<p style='color: red;'>Podaj dane szukania!</p>";
-                return; // Nie generuje reszty strony
+                return;
             }
 
             $query = 'SELECT id, username, email, is_admin, registration_date, wallet, daily_crate, weekly_crate
@@ -327,34 +327,94 @@ if ($_SESSION['is_admin'] == 0) {
     <br>
 
     <h2>Items</h2>
-    <?php
-        $ids=[0];
-        if ($i_result->num_rows > 0){
-            echo '<table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Exterior</th>
-                    <th>Quality</th>
-                </tr>';
+    <details>
+        <summary>All items</summary>
+        <?php
+            $i_query = "SELECT i.id as iid, i.name as iname, ex.name as exname, ex.id as exid, q.name as qname, q.id as qid
+                        FROM items as i
+                        INNER JOIN exteriors as ex ON ex.id = i.exterior_id
+                        INNER JOIN quality as q ON q.id = i.quality_id";
+            $i_result = $conn->query($i_query);
+            
+            $q_query = "SELECT id, name
+                        FROM quality;";
+            $q_result = $conn->query($q_query);
+            
+            $ex_query = "SELECT id, name
+                        FROM exteriors;";
+            $ex_result = $conn->query($ex_query);
+            
+            if ($i_result->num_rows > 0){
+                echo '<table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Exterior</th>
+                        <th>Quality</th>
+                    </tr>';
 
-            foreach ($i_result as $i) {
-                if (array_search($i['iid'], $ids)) {
-                    continue;
-                } else {
-                    $ids[] = $i['iid'];
+                foreach ($i_result as $i) {
+                    $id = $i['iid'];
+                    $name = $i['iname'];
+                    $qid= $i['qid'];
+                    $exid= $i['exid'];
                     echo '<tr><td>' . $i['iid'] . '</td>
                         <td>' . $i['iname'] . '</td>
-                        <td>' . $i['iext'] . '</td>
-                        <td>' . $i['iqua'] . '</td></tr>';
-                }
-            }
+                        <td>' . $i['exname'] . '</td>
+                        <td>' . $i['qname'] . '</td></tr>';
+                    echo '<tr>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="i_etype" value="rem_item">
+                                <input type="hidden" name="iid" value="' . $id . '">
+                                <input type="submit" value="Remove">
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="i_etype" value="change_name">
+                                <input type="hidden" name="iid" value="' . $id . '">
+                                <input type="text" max="50" name="name" value="' . $name . '">
+                                <input type="submit" value="Change">
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="i_etype" value="change_exterior">
+                                <input type="hidden" name="iid" value="' . $id . '">
+                                <select name="exterior">';
 
-            echo '</table>';
-        } else {
-            echo '<p style="color: red;>"No items found</p>';
-        }
-    ?>
+                                foreach ($ex_result as $r) {
+                                    echo '<option value="' . $r['id'] . '">' . $r['name'] . '</option>';
+                                }
+
+                            echo '</select>
+                                <input type="submit" value="Change">
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="i_etype" value="change_quality">
+                                <input type="hidden" name="iid" value="' . $id . '">
+                                <select name="exterior">';
+
+                                foreach ($q_result as $r) {
+                                    echo '<option value="' . $r['id'] . '">' . $r['name'] . '</option>';
+                                }
+
+                            echo '</select>
+                                <input type="submit" value="Change">
+                            </form>
+                        </td>
+                    </tr>';
+                }
+
+                echo '</table>';
+            } else {
+                echo '<p style="color: red;>"No items found</p>';
+            }
+        ?>
+    </details>
     <br>
 
     <h2>Add Item</h2>
