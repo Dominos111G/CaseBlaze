@@ -12,6 +12,7 @@ if ($id == $_SESSION['user_id']) {
     $all_val = 0;
     if ($i_result->num_rows > 0) {
         foreach ($i_result as $w) {
+            if ($w['locked'] == 1) { continue; }
             $all_val += $w['sell_price'];
         }
     }
