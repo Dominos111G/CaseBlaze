@@ -80,9 +80,7 @@ $user_id = $_SESSION['user_id'];
                     
                     if ($stmt->execute()) {
                         $cookie_value = time() + (5 + 60 * ($amount / 10) * 2); // Zapisz timestamp zakończenia cooldownu
-                        setcookie($cookie_name, $cookie_value, time() + (60 * 60 * 24 * 30), "/"); 
-                        echo "<script>alert('Money added to your wallet!');</script>";
-                        echo "<script>window.location.href = window.location.href;</script>"; // Odśwież stronę
+                        setcookie($cookie_name, $cookie_value, time() + (60 * 60 * 24 * 30), "/");
                     } else {
                         echo "<script>alert('Error!');</script>";
                     }
