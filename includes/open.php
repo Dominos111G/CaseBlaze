@@ -123,8 +123,8 @@ while ($item = $items_result->fetch_assoc()) {
         'id' => $item['id'],
         'name' => $item['name'],
         'description' => $item['description'],
-        'market_price' => $item['market_price'],
-        'sell_price' => $item['sell_price'],
+        'market_price' => (float)$item['market_price'],
+        'sell_price' => (float)$item['sell_price'],
         'img' => $item['img'],
         'weight' => max(1, round($weight)) // Minimalna waga to 1
     ];
@@ -234,46 +234,65 @@ $stmt->execute();
 $user_result = $stmt->get_result();
 $updated_user = $user_result->fetch_assoc();
 
-// Przygotuj odpowiedź z losowaniem kilku losowych przedmiotów do animacji
+// Generuj listę przedmiotów do animacji
 $animation_items = [];
-$item_count = min(20, count($items)); // Maksymalnie 20 przedmiotów w animacji
+$total_items = 80;
+$winning_index = 40; // Środkowa pozycja
 
-// Wybierz losowe przedmioty do animacji, ale zapewnij że wygrany jest wśród nich
-$animation_items[] = $selected_item; // Dodaj wygrany jako pierwszy
+// Pobierz WSZYSTKIE przedmioty ze skrzynki do puli (z uwzględnieniem wag dla częstotliwości występowania)
+$all_stmt = $conn->prepare("
+    SELECT DISTINCT i.*, e.rate as exterior_rate, q.rate as quality_rate 
+    FROM crate_item ci 
+    JOIN items i ON ci.item_id = i.id
+    INNER JOIN exteriors e ON i.exterior_id = e.id
+    INNER JOIN quality q ON i.quality_id = q.id
+    WHERE ci.crate_id = ?
+");
+$all_stmt->bind_param('i', $crate_id);
+$all_stmt->execute();
+$pool_result = $all_stmt->get_result();
+$pool_items = [];
 
-// Uzupełnij resztę losowymi przedmiotami
-$other_items = array_filter($items, function($item) use ($selected_item) {
-    return $item['id'] !== $selected_item['id'];
-});
-
-$other_items = array_values($other_items);
-for ($i = 1; $i < $item_count; $i++) {
-    if (empty($other_items)) break;
-    $random_index = array_rand($other_items);
-    $animation_items[] = $other_items[$random_index];
+// Przygotuj pulę przedmiotów z wagami do losowania w animacji
+while ($row = $pool_result->fetch_assoc()) {
+    // Oblicz wagę dla animacji (użyj tych samych wag co przy losowaniu)
+    $base_weight = 1000;
+    $price_factor = $row['market_price'] > 0 ? 100 / $row['market_price'] : 100;
+    $price_factor = min(max($price_factor, 0.1), 10);
+    $exterior_factor = 1 / ($row['exterior_rate'] ?: 1);
+    $quality_factor = 1 / ($row['quality_rate'] ?: 1);
+    $weight = max(1, round($base_weight * $price_factor * $exterior_factor * $quality_factor));
+    
+    for ($i = 0; $i < $weight; $i++) {
+        $pool_items[] = [
+            'id' => $row['id'],
+            'name' => $row['name'],
+            'description' => $row['description'],
+            'market_price' => (float)$row['market_price'],
+            'sell_price' => (float)$row['sell_price'],
+            'img' => $row['img']
+        ];
+    }
 }
 
-// Wymieszaj tablicę aby wygrany nie był zawsze na początku
-shuffle($animation_items);
+// Generuj listę przedmiotów do animacji (80 pozycji)
+for ($i = 0; $i < $total_items; $i++) {
+    if ($i === $winning_index) {
+        // Na pozycji wygrywającej umieść faktycznie wylosowany przedmiot
+        $animation_items[] = $selected_item;
+    } else {
+        // Na pozostałych pozycjach losuj przedmioty z puli z uwzględnieniem wag
+        $random_index = array_rand($pool_items);
+        $animation_items[] = $pool_items[$random_index];
+    }
+}
 
-// Znajdź pozycję wygranego przedmiotu w wymieszanej tablicy
-$winning_position = array_search($selected_item['id'], array_column($animation_items, 'id'));
-
-$response = [
+echo json_encode([
     'success' => true,
     'selected_item' => $selected_item,
     'animation_items' => $animation_items,
-    'winning_position' => $winning_position,
-    'new_balance' => $updated_user['wallet'],
-    'crate_name' => $crate['name'],
-    'crate_price' => $crate['price']
-];
-
-// Jeśli to darmowa skrzynka, dodaj informację o następnym otwarciu
-if ($crate['price'] == 0) {
-    $response['next_available'] = $next_timestamp;
-    $response['next_available_text'] = date('Y-m-d H:i:s', $next_timestamp);
-}
-
-echo json_encode($response);
+    'winning_position' => $winning_index,
+    'new_balance' => (float)$updated_user['wallet'],
+    'next_available' => $next_timestamp ?? 0
+]);
 ?>

@@ -40,39 +40,6 @@ if ($crate['visible'] == 0) {
     <title>CaseBlaze - <?php echo htmlspecialchars($crate['name']); ?></title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/view.css">
-    <style>
-        .timer-text {
-            font-size: 14px;
-            font-weight: normal;
-            display: inline-block;
-        }
-        
-        .open-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            background: #ccc;
-        }
-        
-        .open-btn:disabled:hover {
-            background: #ccc;
-            transform: none;
-        }
-        
-        .button-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-        }
-        
-        .open-btn.free {
-            background: linear-gradient(135deg, #6b8cff 0%, #4a6cf7 100%);
-        }
-        
-        .open-btn.free:hover {
-            background: linear-gradient(135deg, #7c9cff 0%, #5b7dff 100%);
-        }
-    </style>
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
@@ -305,34 +272,71 @@ if ($crate['visible'] == 0) {
             }
         }
         
-        // Funkcje animacji
         function startAnimation(items, winningPos) {
-            currentAnimationItems = items;
-            winningPosition = winningPos;
+            const itemWidth = 160; // Szerokość elementu z marginesem
+            const container = openingContainer;
             
-            // Wyświetl slider
-            openingContainer.style.display = 'block';
+            // WAŻNE: Najpierw pokaż kontener aby uzyskać poprawną szerokość
+            container.style.display = 'flex';
+            container.style.opacity = '0';
             
-            // Stwórz elementy slidera
+            // Pobierz szerokość DOPIERO po ustawieniu display: flex
+            const containerWidth = container.offsetWidth;
+            
+            // Jeśli szerokość nadal wynosi 0 (awaryjnie), ustaw domyślną
+            const finalWidth = containerWidth > 0 ? containerWidth : 800;
+            
+            // Przygotuj slider
+            slider.style.transition = "none";
             slider.innerHTML = '';
+            
+            // Dodaj przedmioty
             items.forEach((item, index) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'slider-item' + (index === winningPosition ? ' winning-item' : '');
-                itemDiv.innerHTML = `
-                    <img class="item-image" src="/img/items/${item.img}" alt="Item Image">
+                const div = document.createElement('div');
+                div.className = 'slider-item';
+                if (index === winningPos) {
+                    // div.classList.add('winning-item');
+                }
+                div.innerHTML = `
+                    <img src="/img/items/${item.img}" alt="${item.name}">
                     <div class="item-name">${item.name}</div>
-                    <div class="item-price">${item.market_price.toFixed(2)} vPLN</div>
                 `;
-                slider.appendChild(itemDiv);
+                slider.appendChild(div);
             });
-
-            // Wyśrodkuj na wygrywającym przedmiocie
+            
+            // Wymuś ponowne obliczenie layoutu
+            slider.offsetHeight;
+            
+            // Ustaw początkową pozycję - wszystkie przedmioty po prawej stronie
+            const startOffset = finalWidth;
+            slider.style.transform = `translateX(${startOffset}px)`;
+            
+            // Krótkie opóźnienie aby przeglądarka zarejestrowała pozycję startową
             setTimeout(() => {
-                const itemWidth = 220;
-                const targetScroll = winningPosition * itemWidth - (slider.clientWidth / 2) + 100;
-                slider.scrollLeft = targetScroll;
-                currentPosition = winningPosition;
-            }, 100);
+                // Pokaż kontener
+                container.style.opacity = '1';
+                
+                // Oblicz pozycję docelową
+                const targetCenterX = (winningPos * itemWidth) + (itemWidth / 2);
+                const targetOffset = (finalWidth / 2) - targetCenterX;
+                
+                // Dodaj losowe przesunięcie dla efektu
+                const randomOffset = (Math.random() - 0.5) * 50;
+                const finalOffset = targetOffset + randomOffset;
+                
+                // Uruchom animację
+                slider.style.transition = "transform 6s cubic-bezier(0.2, 0.9, 0.3, 1.1)";
+                slider.style.transform = `translateX(${finalOffset}px)`;
+                
+            }, 50);
+            
+            // Koniec animacji - pokaż wynik
+            setTimeout(() => {
+                const winningItem = items[winningPos];
+                if (winningItem) {
+                    showResult(winningItem);
+                }
+            }, 6200);
         }
 
         function moveSlider(direction) {
@@ -380,6 +384,14 @@ if ($crate['visible'] == 0) {
 
                 // Pokaż loading
                 loading.style.display = 'flex';
+                
+                // WAŻNE: Ukryj kontener z animacją przed nowym otwarciem
+                openingContainer.style.display = 'none';
+                openingContainer.style.opacity = '0';
+                slider.style.transform = 'none';
+                
+                // Wyczyść poprzednią animację
+                slider.innerHTML = '';
 
                 try {
                     const formData = new FormData();
@@ -401,11 +413,9 @@ if ($crate['visible'] == 0) {
                         
                         // Zaktualizuj timestamp dla darmowych skrzynek
                         if (data.next_available) {
-                            // Zmień tekst przycisku na timer
                             this.innerHTML = '<span class="timer-text" data-timestamp="' + data.next_available + '">Loading...</span>';
                             this.dataset.nextTimestamp = data.next_available;
                             
-                            // Restartuj timer
                             if (timerInterval) {
                                 clearInterval(timerInterval);
                             }
@@ -413,17 +423,30 @@ if ($crate['visible'] == 0) {
                             timerInterval = setInterval(updateTimer, 1000);
                         }
                         
-                        // Rozpocznij animację
-                        startAnimation(data.animation_items, data.winning_position);
-
                         // Ukryj loading
                         loading.style.display = 'none';
-
-                        // Pokaż wynik po krótkim opóźnieniu
+                        
+                        // Zapisz wylosowany przedmiot
+                        const actualWonItem = data.selected_item;
+                        
+                        // Małe opóźnienie przed animacją
+                        setTimeout(() => {
+                            startAnimation(data.animation_items, data.winning_position);
+                            
+                            // Zabezpieczenie - sprawdź po animacji
+                            setTimeout(() => {
+                                const displayedItem = data.animation_items[data.winning_position];
+                                if (displayedItem && displayedItem.id !== actualWonItem.id) {
+                                    console.warn('Animacja wyświetliła inny przedmiot! Poprawiam...');
+                                    showResult(actualWonItem);
+                                }
+                            }, 6300);
+                        }, 100);
+                        
+                        // Odblokuj przycisk po zakończeniu animacji
                         setTimeout(() => {
                             this.disabled = false;
-                            showResult(data.selected_item);
-                        }, 1500);
+                        }, 7000);
                     } else {
                         loading.style.display = 'none';
                         alert('Błąd: ' + (data.error || 'Nie udało się otworzyć skrzynki'));
