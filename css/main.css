@@ -6,6 +6,8 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 nav {
@@ -13,11 +15,12 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    height: 50px;
+    min-height: 50px; 
     background-color: #10101f;
     color: rgb(59, 105, 231);
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     font-size: 18px;
+    width: 100%;
 }
 
 nav ul {
@@ -25,13 +28,34 @@ nav ul {
     display: flex;
     margin: 0 auto;
     padding: 0;
+    justify-content: center;
 }
 
 nav ul li {
-    margin: 0 15px;
+    margin: 5px 15px;
 }
 
 nav a {
     text-decoration: none;
     color: white;
+}
+
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px 10px;
+    }
+
+    nav ul {
+        margin-top: 10px;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+        font-size: 16px;
+    }
+
+    nav ul li {
+        margin: 5px 8px;
+    }
 }
