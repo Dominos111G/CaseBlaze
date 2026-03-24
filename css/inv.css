@@ -92,19 +92,6 @@
     cursor: pointer;
     height: 55px;
 }
-.header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 30px;
-    border-radius: 15px;
-    margin-bottom: 15px;
-    text-align: center;
-    width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    font-size: 1.5em;
-}
 
 .sell-btn {
     width: 100%;
@@ -121,4 +108,11 @@
 .sell-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(95,124,255,0.4);
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 20px 10px;
+        width: 92%;
+    }
 }
