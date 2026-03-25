@@ -17,16 +17,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaseBlaze - Profile</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="css/inv.css">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
 
-    <h3>Search User</h3>
-    <form method="get">
-        <input type="text" name="search" placeholder="UID / Username" <?php if (isset($_GET['search'])) echo " value=" . $_GET['search'] . " "; ?>>
-        <input type="submit" value="Find User">
-    </form>
+    <div class="profile-search">
+    <div class="search-form">
+        <h3>Search User</h3>
+        <form method="get">
+            <input type="text" name="search" placeholder="UID / Username"
+            <?php if (isset($_GET['search'])) echo " value=" . $_GET['search']; ?>>
+            <input type="submit" value="Find User">
+        </form>
+    </div>
 
     <?php
     $owner = false;
@@ -38,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $s_f = $s_result->fetch_assoc();
         if ($s_f > 0) {
             $id = $s_f['id'];
-            header("Location: /profile.php?uid=$id");
+            header("Location: profile.php?uid=$id");
             exit;
         } else {
             echo '<p style="color: red;">Couldn\'t find user.';
@@ -63,8 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $w = $wynik->fetch_assoc();
 
     if ($w > 0) {
+        echo '<div class="profile">';
         echo "<h2>" . $w['username'] . "</h2>";
-        echo "<p>Wallet: <b>" . $w['wallet'] . "</b> vPLN.</p>";
+        echo "<p class='wallet'>Wallet: <b>" . $w['wallet'] . "</b> vPLN</p>";
+        echo '</div>';
         echo '<div>
                 <div class="header"><h2>Inventory</h2></div>';
                 include "includes/inventory.php";

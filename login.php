@@ -48,13 +48,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaseBlaze - Login</title>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
     <?php include 'includes/navigation.php'; ?>
     <main class="div">
-        <h1 class="cent-text">Login</h1><br>
         <form class="cent-form" action="" method="POST">
+            <h1 class="cent-text">Login</h1><br>
             <label for="username">Username:</label><br>
             <input class="pole" type="text" name="username" id="username" required></input><br>
             <label for="password">Password:</label><br>

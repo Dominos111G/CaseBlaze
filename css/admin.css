@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #e5e5e5;
+    color: #111;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    padding: 30px;
+    border-radius: 15px;
+    margin: 20px auto;
+    width: 80%;
+    color: white;
+    background: linear-gradient(135deg, #5f7cff, #7a4d9e);
+}
+
+form {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 10px auto;
+    width: 80%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+input[type="submit"] {
+    background: linear-gradient(135deg, #5f7cff, #6c7ae0);
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(95,124,255,0.4);
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+th {
+    background: #f3f4f6;
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 12px;
+    border-top: 1px solid #eee;
+}
+
+tr:hover {
+    background: #f9fafb;
+}
+
+details {
+    width: 80%;
+    margin: 10px auto;
+    background: white;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px;
+}
+
+label {
+    font-size: 14px;
+    color: #555;
+}
+
+p[style*="red"] {
+    text-align: center;
+    font-weight: bold;
+}
+
+td form {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    form, table, h1, h2, details {
+        width: 95%;
+    }
+}

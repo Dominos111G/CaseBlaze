@@ -21,10 +21,10 @@ if ($id == $_SESSION['user_id']) {
 
 <?php 
 if (isset($all_val) && $all_val > 0) {
-    echo '<form action="includes/sell.php" method="post">
+    echo '<form action="includes/sell.php" method="post" class="sell-form">
         <input type="hidden" name="i_id" value="all">
         <input type="hidden" name="back" value="profile.php">
-        <input type="submit" value="Sell All for ' . $all_val . ' vPLN">
+        <input class ="sell-btn" type="submit" value="Sell All for ' . $all_val . ' vPLN">
     </form>';
 }
 
@@ -57,6 +57,6 @@ if ($i_result->num_rows > 0) {
     }
     echo '</div>';
 } else {
-    echo "<p style='text-align: center;'>Ekwipunek jest pusty!</p>";
+    echo "<p style='text-align: center;'>Inventory is empty!</p>";
 }
 ?>
