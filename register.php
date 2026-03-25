@@ -1,8 +1,13 @@
 <?php
 include 'includes/config.php';
 include 'includes/connect.php';
-$error  = "";
-$ret  = "";
+
+if (!$conn) {
+    die("Błąd połączenia z bazą danych");
+}
+
+$error = "";
+$ret = "";
 
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
     header("Location: index.php");
@@ -30,14 +35,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         } else{
             $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
             $add_query = "INSERT INTO `users`(`username`, `password`, `email`, `wallet`, `daily_crate`, `weekly_crate`, `20vpln`, `50vpln`, `100vpln`, `200vpln`)
-                    VALUES ('$username','$hashedpassword','$email', 10, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY, NOW() - INTERVAL 10 DAY)";
+                    VALUES ('$username','$hashedpassword','$email', 10, DATE_SUB(NOW(), INTERVAL 10 DAY), DATE_SUB(NOW(), INTERVAL 10 DAY), 0, 0, 0, 0)";
         
             if($conn->query($add_query)) {
                 $ret = "User added successfully.";
             } else{
-                echo"<p>Couldn't add user.</p>";
+                echo "<p>Couldn't add user. Error: " . $conn->error . "</p>";
             }
-    }  
+        }  
     }
 }
 ?>
