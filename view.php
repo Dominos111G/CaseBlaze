@@ -260,6 +260,7 @@ if ($crate['visible'] == 0) {
                     timeString = `${days}d ${hours}h ${minutes}m`;
                 }
                 
+                openBtn.Disabled = true;
                 timerText.textContent = `Available in: ${timeString}`;
             }
         }
