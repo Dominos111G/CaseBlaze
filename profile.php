@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="profile-search">
     <div class="search-form">
         <h3>Search User</h3>
-        <form method="get" class="search-form">
+        <form method="get">
             <input type="text" name="search" placeholder="UID / Username"
             <?php if (isset($_GET['search'])) echo " value=" . $_GET['search']; ?>>
             <input type="submit" value="Find User">

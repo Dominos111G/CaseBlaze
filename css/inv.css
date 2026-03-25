@@ -37,11 +37,11 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
-    margin-top: 30px;
     margin-bottom: 15px;
     padding: 30px;
     margin-left: auto;
     margin-right: auto;
+    width: 98%;
     max-width: 1400px;
 }
 .item h4 {
@@ -92,7 +92,12 @@
     cursor: pointer;
     height: 55px;
 }
-
+.sell-form {
+    width: 80%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
 .sell-btn {
     width: 100%;
     padding: 12px;
@@ -103,6 +108,8 @@
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .sell-btn:hover {
