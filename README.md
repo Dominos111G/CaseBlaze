@@ -39,11 +39,12 @@ Stworzenie interaktywnej strony do otwierania skrzynek wzorowanych na tych z gry
 ### Lista podstron w serwisie:
 
 - **Strona główna** – `index.php`
-- **Darmowe skrzynie** – `free.php`
 - **Ekwipunek użytkownika** – `inventory.php`
 - **Profil użytkownika** – `profile.php`
 - **Portfel / Doładowania** – `wallet.php`
 - **Ranking użytkowników** – `leaderboard.php`
 - **Rejestracja** – `register.php`
 - **Logowanie** – `login.php`
-- **Otwieranie skrzynek** – `opening.php`
+- **Przeglądanie skrzynek** – `view.php`
+- **Otwieranie skrzynek** – `open.php`
+- **Panel administracji** – `admin.php`
