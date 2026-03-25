@@ -292,6 +292,7 @@ echo json_encode([
     'selected_item' => $selected_item,
     'animation_items' => $animation_items,
     'winning_position' => $winning_index,
+    'chest_price' => (float)$crate['price'],
     'new_balance' => (float)$updated_user['wallet'],
     'next_available' => $next_timestamp ?? 0
 ]);

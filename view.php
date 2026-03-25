@@ -444,9 +444,11 @@ if ($crate['visible'] == 0) {
                         }, 100);
                         
                         // Odblokuj przycisk po zakończeniu animacji
-                        setTimeout(() => {
-                            this.disabled = false;
-                        }, 7000);
+                        if (data.new_balance >= data.chest_price) {
+                            setTimeout(() => {
+                                this.disabled = false;
+                            }, 7000);
+                        }
                     } else {
                         loading.style.display = 'none';
                         alert('Błąd: ' + (data.error || 'Nie udało się otworzyć skrzynki'));
